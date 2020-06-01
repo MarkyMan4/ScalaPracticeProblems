@@ -58,7 +58,7 @@ object Solutions extends App {
      * scala> length(List(1, 1, 2, 3, 5, 8))
      * res0: Int = 6
      */
-    def length(xs: List[Int]) : Int = {
+    def length[A](xs: List[A]) : Int = {
         if(xs.tail == Nil) {
             return 1
         }
@@ -119,7 +119,7 @@ object Solutions extends App {
      * scala> compress(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
      * res0: List[Symbol] = List('a, 'b, 'c, 'a, 'd, 'e)
      */
-    def compress[A](xs: List[A]): List[A] = {
+    def compress[A](xs: List[A]) : List[A] = {
         if(xs.isEmpty) {
             return xs
         }
@@ -162,7 +162,7 @@ object Solutions extends App {
      * scala> pack(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
      * res0: List[List[Symbol]] = List(List('a, 'a, 'a, 'a), List('b), List('c, 'c), List('a, 'a), List('d), List('e, 'e, 'e, 'e)) 
      */
-    def pack[A](xs: List[A]): List[List[A]] = {
+    def pack[A](xs: List[A]) : List[List[A]] = {
         if(xs.isEmpty) {
             return Nil
         }
@@ -178,4 +178,9 @@ object Solutions extends App {
      * scala> encode(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
      * res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
      */
+     def encode[A](xs: List[A]) : List[(Int, A)] = {
+         return pack(xs) flatMap {
+
+         }
+     }
 }
