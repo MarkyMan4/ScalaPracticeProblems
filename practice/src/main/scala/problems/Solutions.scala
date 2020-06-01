@@ -119,14 +119,63 @@ object Solutions extends App {
      * scala> compress(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
      * res0: List[Symbol] = List('a, 'b, 'c, 'a, 'd, 'e)
      */
-    def compress(xs: List[Symbol]) : List[Symbol] = {
-        var i = 0;
-        val compressed: List[Symbol] = List(xs.head)
-        
-        for(i <- length(xs)) {
-            if(i != 0) {
-
-            }
+    def compress[A](xs: List[A]): List[A] = {
+        if(xs.isEmpty) {
+            return xs
         }
+
+        return xs.head :: pack(xs.tail.dropWhile(_ == xs.head))
     }
+
+    // other options for compress
+
+    // def compress(xs: List[Symbol]) : List[Symbol] = {
+    //     return xs.head +: compressHelper(xs, xs.head)
+    // }
+
+    // // Helper function for P08. Takes a list and the last added element so I can
+    // // make sure an element doesn't get added if it was the last thing added to the list.
+    // def compressHelper(xs: List[Symbol], lastAdded: Symbol): List[Symbol] = {
+    //     if(xs.isEmpty) {
+    //         return xs
+    //     }
+    //     if(xs.head == lastAdded) {
+    //         return compressHelper(xs.tail, lastAdded)
+    //     }
+        
+    //     return xs.head +: compressHelper(xs.tail, xs.head)
+    // }
+
+    // def compressFunctional[A](xs: List[A]) : List[A] = 
+    //     xs.foldRight(List[A]()) {(head, tail) =>
+    //         if(tail.isEmpty || head != tail.head) {
+    //             print(head)
+    //             head :: tail
+    //         }
+    //         else {
+    //             tail
+    //         }
+    //     }
+
+    /* P09 - Pack consecutive duplicates of list elements into sublists.
+     *
+     * scala> pack(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+     * res0: List[List[Symbol]] = List(List('a, 'a, 'a, 'a), List('b), List('c, 'c), List('a, 'a), List('d), List('e, 'e, 'e, 'e)) 
+     */
+    def pack[A](xs: List[A]): List[List[A]] = {
+        if(xs.isEmpty) {
+            return Nil
+        }
+
+        return List(xs.takeWhile(_ == xs.head)) ++ pack(xs.dropWhile(_ == xs.head))
+    }
+
+    /* P10 - Run-length encoding of a list.
+     *
+     * Use the result of problem P09 to implement the so-called run-length encoding data compression method. 
+     * Consecutive duplicates of elements are encoded as tuples (N, E) where N is the number of duplicates of the element E.
+     *
+     * scala> encode(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+     * res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
+     */
 }
