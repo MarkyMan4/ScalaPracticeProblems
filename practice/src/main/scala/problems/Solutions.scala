@@ -263,7 +263,7 @@ object Solutions extends App {
      * res0: (List[Symbol], List[Symbol]) = (List('a, 'b, 'c),List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
      */
     def split[A](n: Int, xs: List[A]) : List[List[A]] = {
-        return List(xs.take(n), xs.drop(n))
+        List(xs.take(n), xs.drop(n))
     }
 
     /* P18 - Extract a slice from a list.
@@ -275,6 +275,93 @@ object Solutions extends App {
      * res0: List[Symbol] = List('d, 'e, 'f, 'g)
      */
     def slice[A](i: Int, k: Int, xs: List[A]) : List[A] = {
-        return xs.drop(i).take(k - i)
+        xs.drop(i).take(k - i)
+    }
+
+    /* P19 - Rotate a list N places to the left.
+     *
+     * scala> rotate(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+     * res0: List[Symbol] = List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k, 'a, 'b, 'c)
+     *
+     * scala> rotate(-2, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+     * res1: List[Symbol] = List('j, 'k, 'a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i)
+     */
+    def rotate[A](n: Int, xs: List[A]) : List[A] = {
+        if(n >= 0) {
+            xs.drop(n) ++ xs.take(n)
+        }
+        else {
+            xs.reverse.take(n.abs).reverse ++ xs.reverse.drop(n.abs).reverse
+        }
+    }
+    
+    /* P20 - Remove the Kth element from a list.
+     *
+     * Return the list and the removed element in a Tuple. Elements are numbered from 0.
+     *
+     * scala> removeAt(1, List('a, 'b, 'c, 'd))
+     * res0: (List[Symbol], Symbol) = (List('a, 'c, 'd),'b)
+     */
+    def removeAt[A](n: Int, xs: List[A]) : (List[A], A) = {
+        if(n < 0) {
+            throw new NoSuchElementException
+        }
+
+        (xs.take(n) ++ xs.drop(n + 1), xs.drop(n).head)
+    }
+        
+    /* P21 - Insert an element at a given position into a list.
+     *
+     * scala> insertAt('new, 1, List('a, 'b, 'c, 'd))
+     * res0: List[Symbol] = List('a, 'new, 'b, 'c, 'd)
+     */
+    def insertAt[A](element: A, index: Int, xs: List[A]) : List[A] = {
+        if(index < 0) {
+            throw new NoSuchElementException
+        }
+
+        (xs.take(index) :+ element) ++ xs.drop(index)
+    }
+
+    /* P22 - Create a list containing all integers within a given range.
+     *
+     * scala> range(4, 9)
+     * res0: List[Int] = List(4, 5, 6, 7, 8, 9)
+     */
+    def range(x: Int, y: Int) : List[Int] = {
+        (x to y).toList
+    }
+
+    /* P23 - Extract a given number of randomly selected elements from a list.
+     *
+     * scala> randomSelect(3, List('a, 'b, 'c, 'd, 'e', 'f, 'g, 'h))
+     * res0: List[Symbol] = List('e, 'd, 'a)
+     */
+    def randomSelect[A](n: Int, xs: List[A]) : List[A] = {
+        if(n <= 0 || xs.isEmpty) {
+            return Nil
+        }
+
+        val num = scala.util.Random.nextInt(xs.size)
+        var removed = removeAt(num, xs)
+        return removed._2 :: randomSelect(n - 1, removed._1)
+    }
+
+    /* P24 - Lotto: Draw N different random numbers from the set 1..M.
+     *
+     * scala> lotto(6, 49)
+     * res0: List[Int] = List(23, 1, 17, 33, 21, 37)
+     */
+    def lotto(x: Int, y: Int) : List[Int] = {
+        randomSelect(x, (1 to y).toList)
+    }
+
+    /* P25 - Generate a random permutation of the elements of a list.
+     *
+     * scala> randomPermute(List('a, 'b, 'c, 'd, 'e, 'f))
+     * res0: List[Symbol] = List('b, 'a, 'd, 'c, 'e, 'f)
+     */
+    def randomPermute[A](xs: List[A]) : List[A] = {
+        randomSelect(xs.size, xs)
     }
 }
