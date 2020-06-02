@@ -179,8 +179,6 @@ object Solutions extends App {
      * res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
      */
      def encode[A](xs: List[A]) : List[(Int, A)] = {
-         return pack(xs) flatMap {
-
-         }
+         return pack(xs) map {x => (length(x), x.head)}
      }
 }
