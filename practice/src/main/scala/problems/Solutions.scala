@@ -124,7 +124,7 @@ object Solutions extends App {
             return xs
         }
 
-        return xs.head :: pack(xs.tail.dropWhile(_ == xs.head))
+        return xs.head :: compress(xs.tail.dropWhile(_ == xs.head))
     }
 
     // other options for compress
@@ -181,4 +181,100 @@ object Solutions extends App {
      def encode[A](xs: List[A]) : List[(Int, A)] = {
          return pack(xs) map {x => (length(x), x.head)}
      }
+
+    /* P11 - Modified run-length encoding.
+     *
+     * Modify the result of problem P10 in such a way that if an element has no duplicates it is simply 
+     * copied into the result list. Only elements with duplicates are transferred as (N, E) terms.
+     *
+     * scala> encodeModified(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+     * res0: List[Any] = List((4,'a), 'b, (2,'c), (2,'a), 'd, (4,'e))
+     */
+    def encodeModified[A](xs: List[A]) : List[Any] = {
+        return encode(xs) map {
+            x => {
+                if(x._1 == 1) x._2
+                else x
+            }
+        }
+    }
+
+    /* P12 - Decode a run-length encoded list.
+     *
+     * Given a run-length code list generated as specified in problem P10, construct its uncompressed version.
+     *
+     * scala> decode(List((4, 'a), (1, 'b), (2, 'c), (2, 'a), (1, 'd), (4, 'e)))
+     * res0: List[Symbol] = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
+     */
+    def decode[A](xs: List[(Int, A)]) : List[A] = xs flatMap {
+        x => List.fill(x._1)(x._2)
+    }
+    
+    /* P13 - Decode a run-length encoded list.
+     *
+     * Implement the so-called run-length encoding data compression method directly. 
+     * I.e. don't use other methods you've written (like P09's pack); do all the work directly.
+     *
+     * scala> encodeDirect(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+     * res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
+     */
+    def encodeDirect[A](xs: List[A]) : List[(Int, A)] = {
+        if(xs.isEmpty) {
+            return Nil
+        }
+
+        return (xs.takeWhile(_ == xs.head).size, xs.head) +: encodeDirect(xs.dropWhile(_ == xs.head))
+    }
+
+    /* P14 - Duplicate the elements of a list.
+     *
+     * scala> duplicate(List('a, 'b, 'c, 'c, 'd))
+     * res0: List[Symbol] = List('a, 'a, 'b, 'b, 'c, 'c, 'c, 'c, 'd, 'd)
+     */
+    def duplicate[A](xs: List[A]) : Any = xs flatMap {
+        x => x +: List(x)
+    }
+
+    /* P15 - Duplicate the elements of a list a given number of times.
+     *
+     * scala> duplicateN(3, List('a, 'b, 'c, 'c, 'd))
+     * res0: List[Symbol] = List('a, 'a, 'a, 'b, 'b, 'b, 'c, 'c, 'c, 'c, 'c, 'c, 'd, 'd, 'd)
+     */
+    def duplicateN[A](n: Int, xs: List[A]) : List[A] = xs flatMap {
+        x => List.fill(n)(x)
+    }
+
+    /* P16 - Drop every Nth element from a list.
+     *
+     * scala> drop(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+     * res0: List[Symbol] = List('a, 'b, 'd, 'e, 'g, 'h, 'j, 'k)
+     */
+    def drop[A](n: Int, xs: List[A]) : List[A] = {
+        if(xs.isEmpty) {
+            return Nil
+        }
+
+        return xs.take(n - 1) ++ drop(n, xs.drop(n))
+    }
+
+    /* P17 - Split a list into two parts.
+     *
+     * scala> split(3, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+     * res0: (List[Symbol], List[Symbol]) = (List('a, 'b, 'c),List('d, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+     */
+    def split[A](n: Int, xs: List[A]) : List[List[A]] = {
+        return List(xs.take(n), xs.drop(n))
+    }
+
+    /* P18 - Extract a slice from a list.
+     *
+     * Given two indices, I and K, the slice is the list containing the elements from and including the Ith element 
+     * up to but not including the Kth element of the original list. Start counting the elements with 0.
+     *
+     * scala> slice(3, 7, List('a, 'b, 'c, 'd, 'e, 'f, 'g, 'h, 'i, 'j, 'k))
+     * res0: List[Symbol] = List('d, 'e, 'f, 'g)
+     */
+    def slice[A](i: Int, k: Int, xs: List[A]) : List[A] = {
+        return xs.drop(i).take(k - i)
+    }
 }
